@@ -1,0 +1,28 @@
+#!/bin/sh
+export REDISLIVE=/srv/live/src
+ 
+case "$1" in
+start)    
+echo -n "Start Redis Live: "
+cd ${REDISLIVE}
+#nohup ./redis-live.py &
+/usr/bin/python ./redis-live.py & &> /dev/null
+echo
+;;
+stop)    
+echo -n "Stop Redis Live: "
+pid=`ps -ef | grep 'redis-live.py' | grep -v 'grep' | awk '{print $2}'`
+if [ -n $pid ]; then
+	/bin/kill -9 ${pid}
+fi
+echo
+;;
+restart) 
+$0 stop
+$0 start
+;;
+*)     
+echo "Usage : $0 {start|stop|restart}"
+exit1
+esac
+exit 0
